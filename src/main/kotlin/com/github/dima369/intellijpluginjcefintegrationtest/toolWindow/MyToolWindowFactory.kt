@@ -49,8 +49,6 @@ class MyToolWindowFactory : ToolWindowFactory, DumbAware {
                     <div id="notification" class="notification">Copied to clipboard: <span id="copied-text"></span></div>
 
                     <script>
-                        // Will be replaced with the actual query code
-                        let copyToClipboard;
                         const notification = document.getElementById('notification');
 
                         document.getElementById('helloButton').addEventListener('click', function() {
