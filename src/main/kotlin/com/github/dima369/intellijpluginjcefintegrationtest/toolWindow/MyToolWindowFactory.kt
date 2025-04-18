@@ -240,8 +240,8 @@ class MyToolWindowFactory : ToolWindowFactory, DumbAware {
 
             // Load the HTML content
             println(htmlContent)
-//            browser.loadHTML(htmlContent)
-            browser.loadURL("http://localhost:1337/")
+            browser.loadHTML(htmlContent)
+//            browser.loadURL("http://localhost:1337/")
 
             // Execute the JavaScript after the page is loaded
             browser.jbCefClient.addLoadHandler(object : org.cef.handler.CefLoadHandlerAdapter() {
