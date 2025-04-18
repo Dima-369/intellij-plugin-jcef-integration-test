@@ -1,19 +1,19 @@
 package com.github.dima369.intellijpluginjcefintegrationtest.toolWindow
 
+import com.github.dima369.intellijpluginjcefintegrationtest.MyBundle
+import com.intellij.notification.NotificationGroupManager
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.content.ContentFactory
-import com.intellij.ui.jcef.JBCefBrowser
+import com.intellij.ui.jcef.JBCefBrowserBase
+import com.intellij.ui.jcef.JBCefBrowserBuilder
 import com.intellij.ui.jcef.JBCefJSQuery
-import com.github.dima369.intellijpluginjcefintegrationtest.MyBundle
-import com.intellij.notification.NotificationGroupManager
-import com.intellij.notification.NotificationType
 import java.io.IOException
 import java.util.concurrent.TimeUnit
-import java.lang.InterruptedException
 
 class MyToolWindowFactory : ToolWindowFactory, DumbAware {
 
@@ -31,7 +31,7 @@ class MyToolWindowFactory : ToolWindowFactory, DumbAware {
 
     class MyToolWindow(private val project: Project, toolWindow: ToolWindow) {
 
-        private val browser = JBCefBrowser()
+        private val browser = JBCefBrowserBuilder().build() as JBCefBrowserBase
 
         init {
             // Create HTML content with a button
@@ -83,12 +83,9 @@ class MyToolWindowFactory : ToolWindowFactory, DumbAware {
                             background-color: #4CAF50;
                             color: white;
                             border-radius: 4px;
-                            opacity: 0;
-                            transition: opacity 0.3s;
                         }
                         .notification.show {
                             display: block;
-                            opacity: 1;
                         }
                     </style>
                 </head>
@@ -102,6 +99,7 @@ class MyToolWindowFactory : ToolWindowFactory, DumbAware {
                         const notification = document.getElementById('notification');
 
                         document.getElementById('helloButton').addEventListener('click', function() {
+                            alert('hi');
                             const textToCopy = 'hello';
                             copyToClipboard(textToCopy);
 
@@ -124,11 +122,11 @@ class MyToolWindowFactory : ToolWindowFactory, DumbAware {
             copyToClipboardQuery.addHandler { text ->
                 // Copy the text to clipboard using pbcopy
                 try {
-                    val process = ProcessBuilder("pbcopy").start()
-                    process.outputStream.use { output ->
-                        output.write(text.toByteArray())
-                    }
-                    process.waitFor(5, TimeUnit.SECONDS)
+//                    val process = ProcessBuilder("pbcopy").start()
+//                    process.outputStream.use { output ->
+//                        output.write(text.toByteArray())
+//                    }
+//                    process.waitFor(5, TimeUnit.SECONDS)
 
                     // Show notification
                     NotificationGroupManager.getInstance()
@@ -173,7 +171,11 @@ class MyToolWindowFactory : ToolWindowFactory, DumbAware {
 
             // Execute the JavaScript after the page is loaded
             browser.jbCefClient.addLoadHandler(object : org.cef.handler.CefLoadHandlerAdapter() {
-                override fun onLoadEnd(browser: org.cef.browser.CefBrowser?, frame: org.cef.browser.CefFrame?, httpStatusCode: Int) {
+                override fun onLoadEnd(
+                    browser: org.cef.browser.CefBrowser?,
+                    frame: org.cef.browser.CefFrame?,
+                    httpStatusCode: Int
+                ) {
                     browser?.executeJavaScript(jsCode, browser.url, 0)
                 }
             }, browser.cefBrowser)
