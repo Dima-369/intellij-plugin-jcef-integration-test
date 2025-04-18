@@ -97,7 +97,6 @@ class MyToolWindowFactory : ToolWindowFactory, DumbAware {
                         const notification = document.getElementById('notification');
 
                         document.getElementById('helloButton').addEventListener('click', function() {
-                            alert('hi');
                             const textToCopy = 'hello';
                             copyToClipboard(textToCopy);
 
@@ -118,6 +117,7 @@ class MyToolWindowFactory : ToolWindowFactory, DumbAware {
             // Create a JavaScript query to handle the button click
             val copyToClipboardQuery = JBCefJSQuery.create(browser)
             copyToClipboardQuery.addHandler { text ->
+                println("DUDEEEE")
                 // Copy the text to clipboard using pbcopy
                 try {
 //                    val process = ProcessBuilder("pbcopy").start()
@@ -141,6 +141,7 @@ class MyToolWindowFactory : ToolWindowFactory, DumbAware {
             };""".trimIndent()
 
             // Load the HTML content
+            println(htmlContent)
             browser.loadHTML(htmlContent)
 
             // Execute the JavaScript after the page is loaded
