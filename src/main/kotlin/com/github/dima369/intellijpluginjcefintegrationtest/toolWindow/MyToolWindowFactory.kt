@@ -1,8 +1,7 @@
 package com.github.dima369.intellijpluginjcefintegrationtest.toolWindow
 
 import com.github.dima369.intellijpluginjcefintegrationtest.MyBundle
-import com.intellij.notification.NotificationGroupManager
-import com.intellij.notification.NotificationType
+import com.github.dima369.intellijpluginjcefintegrationtest.Notifications
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
@@ -13,7 +12,6 @@ import com.intellij.ui.jcef.JBCefBrowserBase
 import com.intellij.ui.jcef.JBCefBrowserBuilder
 import com.intellij.ui.jcef.JBCefJSQuery
 import java.io.IOException
-import java.util.concurrent.TimeUnit
 
 class MyToolWindowFactory : ToolWindowFactory, DumbAware {
 
@@ -128,36 +126,12 @@ class MyToolWindowFactory : ToolWindowFactory, DumbAware {
 //                    }
 //                    process.waitFor(5, TimeUnit.SECONDS)
 
-                    // Show notification
-                    NotificationGroupManager.getInstance()
-                        .getNotificationGroup("JCEF Integration")
-                        .createNotification(
-                            MyBundle.message("copiedToClipboard", text),
-                            NotificationType.INFORMATION
-                        )
-                        .notify(project)
+                    Notifications.showInfo(project, MyBundle.message("copiedToClipboard", text))
                 } catch (e: IOException) {
-                    // Show error notification
-                    NotificationGroupManager.getInstance()
-                        .getNotificationGroup("JCEF Integration")
-                        .createNotification(
-                            "Failed to copy to clipboard: ${e.message}",
-                            NotificationType.ERROR
-                        )
-                        .notify(project)
-                    thisLogger().warn("Failed to copy to clipboard", e)
+                    Notifications.showError(project, "Failed to copy to clipboard: ${e.message}")
                 } catch (e: InterruptedException) {
-                    // Show error notification
-                    NotificationGroupManager.getInstance()
-                        .getNotificationGroup("JCEF Integration")
-                        .createNotification(
-                            "Clipboard operation timed out: ${e.message}",
-                            NotificationType.ERROR
-                        )
-                        .notify(project)
-                    thisLogger().warn("Clipboard operation timed out", e)
+                    Notifications.showError(project, "Clipboard operation timed out: ${e.message}")
                 }
-
                 null
             }
 
