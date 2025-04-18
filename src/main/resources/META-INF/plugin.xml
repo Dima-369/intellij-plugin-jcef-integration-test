@@ -11,5 +11,6 @@
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow factoryClass="com.github.dima369.intellijpluginjcefintegrationtest.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
         <postStartupActivity implementation="com.github.dima369.intellijpluginjcefintegrationtest.startup.MyProjectActivity" />
+        <notificationGroup id="JCEF Integration" displayType="BALLOON" />
     </extensions>
 </idea-plugin>

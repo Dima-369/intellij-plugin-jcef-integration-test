@@ -1,0 +1,1 @@
+- integrate jcef in the existing toolwindow, display a single button stating "hello". clicking it should copy "hello" to the clipboard.
