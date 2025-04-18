@@ -32,59 +32,16 @@ class MyToolWindowFactory : ToolWindowFactory, DumbAware {
         private val browser = JBCefBrowserBuilder().build() as JBCefBrowserBase
 
         init {
+            // Load CSS content directly
+            val cssContent = javaClass.classLoader.getResourceAsStream("css/styles.css")?.bufferedReader()?.readText() ?: ""
+
             // Create HTML content with a button
             val htmlContent = """
                 <!DOCTYPE html>
                 <html>
                 <head>
                     <style>
-                        :root {
-                            --background-color: #f2f2f2;
-                            --text-color: #000000;
-                            --button-background: #e1e1e1;
-                            --button-text: #000000;
-                            --button-border: #c1c1c1;
-                            --button-hover-background: #d1d1d1;
-                        }
-                        @media (prefers-color-scheme: dark) {
-                            :root {
-                                --background-color: #2b2b2b;
-                                --text-color: #bbbbbb;
-                                --button-background: #3c3f41;
-                                --button-text: #bbbbbb;
-                                --button-border: #5e6060;
-                                --button-hover-background: #494d4f;
-                            }
-                        }
-                        body {
-                            font-family: Arial, sans-serif;
-                            margin: 20px;
-                            background-color: var(--background-color);
-                            color: var(--text-color);
-                        }
-                        button {
-                            padding: 10px 20px;
-                            font-size: 16px;
-                            cursor: pointer;
-                            background-color: var(--button-background);
-                            color: var(--button-text);
-                            border: 1px solid var(--button-border);
-                            border-radius: 4px;
-                        }
-                        button:hover {
-                            background-color: var(--button-hover-background);
-                        }
-                        .notification {
-                            display: none;
-                            margin-top: 10px;
-                            padding: 10px;
-                            background-color: #4CAF50;
-                            color: white;
-                            border-radius: 4px;
-                        }
-                        .notification.show {
-                            display: block;
-                        }
+                    ${cssContent.replace("\n", "\n                    ")}
                     </style>
                 </head>
                 <body>
