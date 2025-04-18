@@ -55,8 +55,6 @@ class MyToolWindowFactory : ToolWindowFactory, DumbAware {
                     <div id="notification" class="notification">Copied to clipboard: <span id="copied-text"></span></div>
 
                     <script>
-                        let reportJsError;
-                        let copyToClipboard;
                         const notification = document.getElementById('notification');
 
                         // Global error handler
