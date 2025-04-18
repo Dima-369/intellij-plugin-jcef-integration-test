@@ -11,6 +11,9 @@ import com.intellij.ui.content.ContentFactory
 import com.intellij.ui.jcef.JBCefBrowserBase
 import com.intellij.ui.jcef.JBCefBrowserBuilder
 import com.intellij.ui.jcef.JBCefJSQuery
+import org.cef.browser.CefBrowser
+import org.cef.browser.CefFrame
+import org.cef.handler.CefLoadHandler
 import java.io.IOException
 
 class MyToolWindowFactory : ToolWindowFactory, DumbAware {
@@ -245,9 +248,20 @@ class MyToolWindowFactory : ToolWindowFactory, DumbAware {
 
             // Execute the JavaScript after the page is loaded
             browser.jbCefClient.addLoadHandler(object : org.cef.handler.CefLoadHandlerAdapter() {
+
+                override fun onLoadError(
+                    browser: CefBrowser?,
+                    frame: CefFrame?,
+                    errorCode: CefLoadHandler.ErrorCode?,
+                    errorText: String?,
+                    failedUrl: String?
+                ) {
+                    Notifications.showError(project, "Error loading URL: $failedUrl")
+                }
+
                 override fun onLoadEnd(
-                    browser: org.cef.browser.CefBrowser?,
-                    frame: org.cef.browser.CefFrame?,
+                    browser: CefBrowser?,
+                    frame: CefFrame?,
                     httpStatusCode: Int
                 ) {
                     browser?.executeJavaScript(jsCode, browser.url, 0)
