@@ -1,6 +1,8 @@
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
     id("java") // Java support
@@ -34,6 +36,16 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.opentest4j)
 
+    // JUnit 5 for integration tests
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
+    // Dependency Injection for Starter configuration
+    testImplementation("org.kodein.di:kodein-di-jvm:7.20.2")
+
+    // UI Testing dependencies
+    testImplementation("com.intellij.remoterobot:remote-robot:0.11.22")
+    testImplementation("com.intellij.remoterobot:remote-fixtures:0.11.22")
+    testImplementation("org.junit.platform:junit-platform-launcher:1.10.2")
+
     // IntelliJ Platform Gradle Plugin Dependencies Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
     intellijPlatform {
         create(providers.gradleProperty("platformType"), providers.gradleProperty("platformVersion"))
@@ -45,6 +57,8 @@ dependencies {
         plugins(providers.gradleProperty("platformPlugins").map { it.split(',') })
 
         testFramework(TestFrameworkType.Platform)
+        // Add Starter Framework for integration tests
+        testFramework(TestFrameworkType.Starter)
     }
 }
 
@@ -131,6 +145,17 @@ tasks {
 
     publishPlugin {
         dependsOn(patchChangelog)
+    }
+
+    test {
+        dependsOn("buildPlugin")
+        systemProperty("path.to.build.plugin", buildPlugin.get().archiveFile.get().asFile.absolutePath)
+        useJUnitPlatform()
+        testLogging {
+            events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
+            exceptionFormat = TestExceptionFormat.FULL
+            showStandardStreams = true
+        }
     }
 }
 
